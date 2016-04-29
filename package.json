@@ -1,0 +1,19 @@
+{
+  "name": "ichat",
+  "version": "1.0.0",
+  "description": "socket.io即时通讯demo",
+  "main": "chat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/383514580/iChat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/383514580/iChat/issues"
+  },
+  "homepage": "https://github.com/383514580/iChat#readme"
+}
