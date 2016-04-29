@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/383514580/iChat/issues"
   },
-  "homepage": "https://github.com/383514580/iChat#readme"
+  "homepage": "https://github.com/383514580/iChat#readme",
+  "devDependencies": {
+    "express": "^4.13.4"
+  }
 }

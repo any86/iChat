@@ -1,0 +1,35 @@
+/*登录*/
+.mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1989;}
+.mask .dialog-login{height: 180px;margin: auto; position: absolute;top:0;left:0;right: 0;bottom:0;}
+.mask .dialog-login input{padding: 15px;display: block;width: 240px;margin: auto;font-size: 16px;
+    background: rgba(255,255,255,0);border: 1px solid rgba(255,255,255,0.1);color: rgba(255,255,255,0.5);}
+.mask .dialog-login .btn-login{text-align: center; width: 100%;height: 40px;line-height: 40px; 
+   color: rgba(255,255,255,0.2);font-size: 16px; display: block;margin: auto;cursor: pointer;}
+.mask .dialog-login .btn-login:hover{color: rgba(255,255,255,0.8);}
+
+
+/* app */
+.app{position: fixed;height: 100%;width: 100%;display: box;display: -webkit-box;}
+/* 用户列表 */
+.app .users{display: block;height: 100%;width: 240px;border:1px solid #ddd;}
+.app .users li{display: block;padding: 15px;border-bottom:1px solid #ddd;cursor: pointer;}
+/*对话列表*/
+.app .dialog{box-flex:1;-webkit-box-flex:1;position: relative;}
+.app .dialog ul{padding:15px;display:block;overflow:hidden;}
+.app .dialog ul li{display:block;overflow:hidden;padding:5px;}
+.app .dialog ul li a{padding:15px;display:block;min-width:200px;border-radius:4px;box-shadow:1px 2px 3px rgba(0,0,0,0.15);}
+.app .dialog ul li a.other-say{float:left;display:block;background:#eee;color:#444;}
+.app .dialog ul li a.i-say{float:right;display:block;background:#69c;color:#fff;}
+.app .dialog .bar{position:absolute;bottom:0;left:0;padding:15px;width:100%;background:#ddd;}
+.app .dialog .bar .say{width:80%;margin:auto;display:-webkit-box;display:box;box-shadow:1px 2px 3px rgba(0,0,0,0.1);}
+.app .dialog .bar .say .content{-webkit-box-flex:1;box-flex:1;outline:none;height:50px;line-height:50px;font-size:16px;border:0 none;display:block;padding:0 15px;}
+.app .dialog .bar .say .btn-send{display:block;height:50px;width:120px;line-height:50px;text-align:center;background:#aaa;color:#fff;cursor:pointer;transition:all .3s;}
+.app .dialog .bar .say .btn-send:hover{opacity:0.8;}
+.app .dialog .bar .say .btn-send:active{opacity:0.1;}
+
+/* 动画 */
+.i_say-transition{transition:all .3s ease;-webkit-transition:all .3s ease;opacity:1;}
+.i_say-enter,.i_say-leave{-webkit-transform:scale(2);transform:scale(2);opacity:0;}
+.other_say-transition{-webkit-transition:all .3s ease;transition:all .3s ease;}
+.other_say-enter,.i_say-leave{-webkit-transform:scale(2);transform:scale(2);}
+

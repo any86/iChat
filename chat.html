@@ -3,88 +3,54 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>iChat</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <style type="text/css">
-    *{padding:0;margin:0;font-family:'微软雅黑','microsoft yahei','新宋体','宋体',Tahoma,Verdana,Arial,Helvetica,sans-serif;}
-    html{overflow-y:scroll;}
-    li{list-style:none;}
-    a,
-    p{font-size:14px;}
-    ::selection{background:rgba(0,0,0,0.8);color:#00BFFF;}
-    ::-moz-selection{background:rgba(0,0,0,0.8);color:#00BFFF;}
-    ::-webkit-selection{background:rgba(0,0,0,0.8);color:#00BFFF;}
-    ::-ms-selection{background:rgba(0,0,0,0.8);color:#00BFFF;}
-    ::-webkit-scrollbar{background:#ccc;width:3px;height:3px;}
-    ::-webkit-scrollbar-thumb{background:#888;}
-    ::-moz-scrollbar{background:#444;width:8px;}
-    ::-moz-scrollbar-thumb{background:#888;}
-    ::-ms-scrollbar{background:#444;width:8px;height:3px;}
-    ::-ms-scrollbar-thumb{background:#888;}
-    .clearfix{clear:both;}
-    .ovs{overflow:scroll;}
-    .pull-left{float:left;}
-    .pull-right{float:right;}
-
-
-    .pane{margin-bottom:200px;}
-    .pane ul{padding:15px;display:block;overflow:hidden;}
-    .pane ul li{display:block;overflow:hidden;padding:5px;}
-    .pane ul li a{padding:15px;display:block;min-width:200px;border-radius:4px;box-shadow:1px 2px 3px rgba(0,0,0,0.15);}
-    .pane ul li a.other-say{float:left;display:block;background:#eee;color:#444;}
-    .pane ul li a.i-say{float:right;display:block;background:#69c;color:#fff;}
-    .bar{position:fixed;bottom:0;left:0;padding:15px;width:100%;background:#ddd;}
-    .bar .say{width:80%;margin:auto;display:-webkit-box;display:box;box-shadow:1px 2px 3px rgba(0,0,0,0.1);}
-    .bar .say .i_name{height: 50px;line-height: 50px;display: block;padding: 0 15px;color: #69c;}
-    .bar .say .content{-webkit-box-flex:1;box-flex:1;outline:none;height:50px;line-height:50px;font-size:16px;border:0 none;display:block;padding:0 15px;}
-    .bar .say .btn-send{display:block;height:50px;width:120px;line-height:50px;text-align:center;background:#aaa;color:#fff;cursor:pointer;transition:all .3s;}
-    .bar .say .btn-send:hover{opacity:0.8;}
-    .bar .say .btn-send:active{opacity:0.1;}
-
-    /* 动画 */
-    .i_say-transition{transition:all .3s ease;-webkit-transition:all .3s ease;opacity:1;}
-    .i_say-enter,
-    .i_say-leave{-webkit-transform:scale(2);transform:scale(2);opacity:0;}
-    .other_say-transition{-webkit-transition:all .3s ease;transition:all .3s ease;}
-    .other_say-enter,
-    .i_say-leave{-webkit-transform:scale(2);transform:scale(2);}
-    </style>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="chat.css">
 </head>
 
 <body>
+<!--     <div class="mask">
+        <div class="dialog dialog-login">
+            <input type="text" placeholder="请出入昵称"/>
+            <a class="btn-login">登录</a>
+        </div>
+    </div> -->
 
-    <div class="pane">
-        <ul id="j-say-list">
-            <template v-for="item in say">
-                <li transition="i_say" v-if="'i_say' == item.type">
-                    <a class="i-say" v-text="'我 : ' + item.what"></a>
-                </li>
-                <li transition="other_say" v-else>
-                    <a class="other-say" v-text="item.who + ' : ' + item.what"></a>
-                </li>
-            </template>
+    
+    <div class="app">
+        <!-- 用户列表 -->
+        <ul class="users">
+            <li v-for="user in users" v-text="user.nickname"></li>
         </ul>
-    </div>
-    <div class="bar">
-        <div class="say">
-            <a class="i_name" v-text="'当前 : ' + i.name"></a>
-            <input placeholder="说你所想" class="content" type="text" v-model="i_say" v-on:keydown.13="send">
-            <a class="btn-send" v-on:click="send">发送</a>
+        <!-- /用户列表 -->
+        <div class="dialog">
+            <ul id="j-say-list">
+                <template v-for="item in dialog">
+                    <li transition="i_say" v-if="'i_say' == item.type">
+                        <a class="i-say" v-text="'我 : ' + item.content"></a>
+                    </li>
+                    <li transition="other_say" v-else>
+                        <a class="other-say" v-text="item.nickname + ' : ' + item.content"></a>
+                    </li>
+                </template>
+            </ul>
+            <div class="bar">
+                <div class="say">
+                    <input placeholder="说你所想" class="content" type="text" v-model="i.content" v-on:keydown.13="send">
+                    <a class="btn-send" v-on:click="send">发送</a>
+                </div>
+            </div>
         </div>
     </div>
+    
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="http://cn.vuejs.org/js/vue.js"></script>
     <script type="text/javascript">
-    function rand_name() {
-        var arr = ['孙悟空', '唐僧', '猪八戒', '葫芦娃', '贝利'];
-        var rand = Math.floor(Math.random() * 5);
-        return arr[rand];
-    }
-
 
     function autoScroll() {
         var scroll_top = document.body.scrollTop; // 滚动条距浏览器view上端距离
@@ -93,35 +59,44 @@
         var list_height = document.getElementById('j-say-list').scrollHeight;
         document.body.scrollTop = list_height - win_height + 200;
     }
-    var socket = io('http://192.168.18.60:8999');
+    var socket = io('http://192.168.18.60:90');
 
     var vm = new Vue({
         'el': 'body',
         'data': {
-            'i_say': '',
             'i': {
-                'name': rand_name()
+                'nickname': '123',
+                'content': ''
             },
-            'say': []
+            'dialog': [],
+            'users': [{
+                'nickname': '黑猫警长'
+            },{
+                'nickname': '葫芦娃'
+            }]
+        },
+        'computed': {
+
         },
         'created': function() {
             var _this = this;
-            socket.on('other_say', function(data) {
-                _this.say.push(data);
-                autoScroll()
-            });
+            // socket.on('other_say', function(data) {
+            //     _this.say.push(data);
+            //     autoScroll()
+            // });
         },
         'methods': {
             'send': function() {
                 var _this = this;
-                this.say.push({
-                    'who': this.i.name,
-                    'what': this.i_say,
+                this.dialog.push({
+                    'nickname': _this.i.nickname,
+                    'content': _this.i.content,
                     'type': 'i_say'
                 });
+
                 socket.emit('send', {
-                    'who': _this.i.name,
-                    'what': _this.i_say,
+                    'nickname': _this.i.nickname,
+                    'content': _this.i.content,
                     'type': 'other_say'
                 });
                 // 清空input

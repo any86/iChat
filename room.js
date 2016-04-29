@@ -5,7 +5,7 @@ var fs = require('fs');
 app.listen(8999);
 
 function handler(req, res) {
-    fs.readFile(__dirname + '/io.html',
+    fs.readFile(__dirname + '/room.html',
         function(err, data) {
             if (err) {
             res.writeHead(500);
