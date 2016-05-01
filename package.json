@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/383514580/iChat#readme",
   "devDependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "open": "0.0.5"
   }
 }
