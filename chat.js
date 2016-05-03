@@ -37,7 +37,7 @@ io.on('connection', function(socket) {
         data.scoket = socket;
         data.dialog = [];
         users.splice(0, 0, data);
-        socket.broadcast.emit('signInOne', {a: 1});     
+        // socket.broadcast.emit('signInOne', {a: 1});     
         console.log('登录用户: ' + users);
     });
 
