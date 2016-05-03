@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>iChat</title>
@@ -9,23 +8,23 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="reset.css">
-    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/chat.css">
 </head>
 
 <body>
-<!--     <div class="mask">
+    <div class="mask" v-show="mask_show">
         <div class="dialog dialog-login">
-            <input type="text" placeholder="请出入昵称"/>
-            <a class="btn-login">登录</a>
+            <input v-model="i.nickname" type="text" placeholder="请出入昵称"/>
+            <a class="btn-login" v-on:click="signIn">登录</a>
         </div>
-    </div> -->
+    </div>
 
-    
+
     <div class="app">
         <!-- 用户列表 -->
         <ul class="users">
-            <li v-for="user in users" v-text="user.nickname"></li>
+            <li v-bind:class="{active: user.active}" v-on:click="switchUser(i)" v-for="(i, user) in users" v-text="user.nickname"></li>
         </ul>
         <!-- /用户列表 -->
         <div class="dialog">
@@ -47,11 +46,9 @@
             </div>
         </div>
     </div>
-    
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="http://cn.vuejs.org/js/vue.js"></script>
+    <script type="text/javascript" src="/js/vue.js"></script>
     <script type="text/javascript">
-
     function autoScroll() {
         var scroll_top = document.body.scrollTop; // 滚动条距浏览器view上端距离
         var win_height = window.innerHeight; // 浏览器view高
@@ -65,27 +62,43 @@
         'el': 'body',
         'data': {
             'i': {
-                'nickname': '123',
+                'nickname': '宁宁',
                 'content': ''
             },
-            'dialog': [],
+            'user_active': {},
             'users': [{
-                'nickname': '黑猫警长'
-            },{
-                'nickname': '葫芦娃'
-            }]
+                'active': false,
+                'nickname': '黑猫警长',
+                'socket': {}
+            }, {
+                'active': false,
+                'nickname': '葫芦娃',
+                'socket': {}
+            }],
+            'mask_show': true
         },
         'computed': {
 
         },
         'created': function() {
             var _this = this;
-            // socket.on('other_say', function(data) {
-            //     _this.say.push(data);
-            //     autoScroll()
-            // });
+            socket.on('signInOne', function(data) {
+                _this.users.splice(0, 0, data);
+            });
         },
         'methods': {
+            'signIn': function(){
+                var _this = this;
+                this.mask_show = false;
+                socket.emit('signIn', {
+                    'nickname': _this.i.nickname
+                });
+            },
+            'switchUser': function(i){
+                this.user_active.active = false;
+                this.user_active = this.users[i];
+                this.user_active.active = true;
+            },
             'send': function() {
                 var _this = this;
                 this.dialog.push({
@@ -94,11 +107,12 @@
                     'type': 'i_say'
                 });
 
-                socket.emit('send', {
+                socket.emit('sendToOne', {
                     'nickname': _this.i.nickname,
                     'content': _this.i.content,
                     'type': 'other_say'
                 });
+
                 // 清空input
                 this.i_say = '';
                 autoScroll();

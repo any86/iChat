@@ -12,7 +12,8 @@
 .app{position: fixed;height: 100%;width: 100%;display: box;display: -webkit-box;}
 /* 用户列表 */
 .app .users{display: block;height: 100%;width: 240px;border:1px solid #ddd;}
-.app .users li{display: block;padding: 15px;border-bottom:1px solid #ddd;cursor: pointer;}
+.app .users li{display: block;padding: 15px;border-bottom:1px solid #ddd;cursor: pointer;transition:all .5s;}
+.app .users li.active{background: #69c;color: #fff;}
 /*对话列表*/
 .app .dialog{box-flex:1;-webkit-box-flex:1;position: relative;}
 .app .dialog ul{padding:15px;display:block;overflow:hidden;}
