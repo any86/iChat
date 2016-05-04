@@ -67,15 +67,7 @@
                 'nickname': '宁宁'
             },
             'user_active': {},
-            'users': [{
-                'active': false,
-                'nickname': '黑猫警长',
-                'dialog': []
-            }, {
-                'active': false,
-                'nickname': '葫芦娃',
-                'dialog': []
-            }],
+            'users': [],
             'mask_show': true
         },
         'computed': {
@@ -94,7 +86,7 @@
                 var from_nickname = data.from.nickname;
                 _this.users.map(function(user){
                     if (from_nickname == user.nickname) {
-                        user.dialog.splice(0, 0, {
+                        user.dialog.push({
                             'content': data.from.content,
                             'type': 'other_say'
                         });
