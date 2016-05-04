@@ -4,8 +4,9 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
+var _ = require('underscore');
 var users = [];
+var user_sockets = {};
 
 //配置端口
 var port = process.env.PORT || 3000;
@@ -18,8 +19,6 @@ http.listen(90);
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/view/chat.html');
 });
-
-
 
 // open('http://192.168.18.60:90');
 
@@ -34,22 +33,25 @@ io.on('connection', function(socket) {
     // });
 
     socket.on('signIn', function(data){
-        data.scoket = socket;
-        data.dialog = [];
-        users.splice(0, 0, data);
-        // socket.broadcast.emit('signInOne', {a: 1});     
-        console.log('登录用户: ' + users);
+        //判断用户是否在线
+        if(-1 == _.findIndex(users, data)){
+            // 用户socket集合
+            user_sockets[data.nickname] = socket;
+            // 添加用户信息
+            users.splice(0, 0, data);
+            // 告知其他人该用户(我)已登录
+            socket.broadcast.emit('otherSignIn', data);
+            console.log(data);
+        } else {
+            socket.emit('loginStatus', {'status': 1, 'info': '已登录'})
+            console.log(data.nickname + '已登录');
+        }
     });
 
-
-
-
-    socket.on('sendToOne', function(data){
-        console.log(io.sockets.sockets);
-        // fs.writeFile('config.json', JSON.stringify(io.sockets.sockets));
-        // 广播给所有人, 不包括发送源的人
-        // socket.broadcast.emit('other_say', data);        
+    socket.on('send', function(data){
+        var nickname = data.to.nickname; // 接受方昵称
+        user_sockets[nickname].emit('receive', data);
     });
 
 });
-//注释
+//函数

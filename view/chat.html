@@ -24,17 +24,19 @@
     <div class="app">
         <!-- 用户列表 -->
         <ul class="users">
-            <li v-bind:class="{active: user.active}" v-on:click="switchUser(i)" v-for="(i, user) in users" v-text="user.nickname"></li>
+        <template v-for="(i, user) in users">
+            <li v-bind:class="{active: user.active}" v-on:click="switchUser(i)" v-text="user.nickname"></li>
+        </template>
         </ul>
         <!-- /用户列表 -->
         <div class="dialog">
             <ul id="j-say-list">
-                <template v-for="item in dialog">
+                <template v-for="item in user_active.dialog">
                     <li transition="i_say" v-if="'i_say' == item.type">
-                        <a class="i-say" v-text="'我 : ' + item.content"></a>
+                        <a class="i-say" v-text="item.content"></a>
                     </li>
                     <li transition="other_say" v-else>
-                        <a class="other-say" v-text="item.nickname + ' : ' + item.content"></a>
+                        <a class="other-say" v-text="item.content"></a>
                     </li>
                 </template>
             </ul>
@@ -68,11 +70,11 @@
             'users': [{
                 'active': false,
                 'nickname': '黑猫警长',
-                'socket': {}
+                'dialog': []
             }, {
                 'active': false,
                 'nickname': '葫芦娃',
-                'socket': {}
+                'dialog': []
             }],
             'mask_show': true
         },
@@ -81,8 +83,23 @@
         },
         'created': function() {
             var _this = this;
-            socket.on('signInOne', function(data) {
+
+            socket.on('otherSignIn', function(data) {
+                data.active = false;
+                data.dialog = [];
                 _this.users.splice(0, 0, data);
+            });
+
+            socket.on('receive', function(data) {
+                var from_nickname = data.from.nickname;
+                _this.users.map(function(user){
+                    if (from_nickname == user.nickname) {
+                        user.dialog.splice(0, 0, {
+                            'content': data.from.content,
+                            'type': 'other_say'
+                        });
+                    }
+                });
             });
         },
         'methods': {
@@ -100,18 +117,21 @@
             },
             'send': function() {
                 var _this = this;
-                this.dialog.push({
-                    'nickname': _this.i.nickname,
-                    'content': _this.i.content,
-                    'type': 'i_say'
+                // UI变化
+                this.user_active.dialog.push({
+                    'type': 'i_say',
+                    'content': _this.i.content
                 });
-
-                socket.emit('sendToOne', {
-                    'nickname': _this.i.nickname,
-                    'content': _this.i.content,
-                    'type': 'other_say'
+                // socket通信
+                socket.emit('send', {
+                    'from': {
+                        'nickname': _this.i.nickname,
+                        'content': _this.i.content
+                    },
+                    'to': {
+                        'nickname': _this.user_active.nickname
+                    }
                 });
-
                 // 清空input
                 this.i_say = '';
                 autoScroll();

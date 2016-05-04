@@ -30,7 +30,10 @@
 
 /* 动画 */
 .i_say-transition{transition:all .3s ease;-webkit-transition:all .3s ease;opacity:1;}
-.i_say-enter,.i_say-leave{-webkit-transform:scale(2);transform:scale(2);opacity:0;}
+.i_say-enter{-webkit-transform:scale(2);transform:scale(2);opacity:0;}
+.i_say-leave{-webkit-transform:scale(1);transform:scale(1);opacity:0;}
+
 .other_say-transition{-webkit-transition:all .3s ease;transition:all .3s ease;}
-.other_say-enter,.i_say-leave{-webkit-transform:scale(2);transform:scale(2);}
+.other_say-enter{-webkit-transform:scale(2);transform:scale(2);}
+.other_say-leave{-webkit-transform:scale(2);transform:scale(2);}
 
